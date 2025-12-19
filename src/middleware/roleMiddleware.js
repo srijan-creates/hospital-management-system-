@@ -1,13 +1,3 @@
-/**
- * Authorization Middleware
- * Checks if user has required role(s) or permission(s)
- */
-
-/**
- * Authorize by Role Name
- * @param {Array<string>} allowedRoles - Array of role names that are allowed
- * @returns {Function} Express middleware function
- */
 function authorizeRoles(...allowedRoles) {
     return (req, res, next) => {
         try {
@@ -46,11 +36,6 @@ function authorizeRoles(...allowedRoles) {
     };
 }
 
-/**
- * Authorize by Permission Name
- * @param {Array<string>} requiredPermissions - Array of permission names required
- * @returns {Function} Express middleware function
- */
 function authorizePermissions(...requiredPermissions) {
     return (req, res, next) => {
         try {
@@ -93,12 +78,6 @@ function authorizePermissions(...requiredPermissions) {
     };
 }
 
-/**
- * Authorize Self or Admin
- * Allows user to access their own resources or admin to access any
- * @param {string} userIdParam - Name of the route parameter containing user ID (default: 'id')
- * @returns {Function} Express middleware function
- */
 function authorizeSelfOrAdmin(userIdParam = "id") {
     return (req, res, next) => {
         try {
@@ -113,7 +92,6 @@ function authorizeSelfOrAdmin(userIdParam = "id") {
             const currentUserId = req.user._id.toString();
             const userRole = req.user.role?.name;
 
-            // Allow if user is admin or accessing their own resource
             if (userRole === "admin" || currentUserId === requestedUserId) {
                 return next();
             }
@@ -133,11 +111,6 @@ function authorizeSelfOrAdmin(userIdParam = "id") {
     };
 }
 
-/**
- * Authorize Profile Owner
- * Checks if the authenticated user owns the profile being accessed
- * @returns {Function} Express middleware function
- */
 function authorizeProfileOwner() {
     return async (req, res, next) => {
         try {
@@ -150,13 +123,10 @@ function authorizeProfileOwner() {
 
             const userRole = req.user.role?.name;
 
-            // Admin can access any profile
             if (userRole === "admin") {
                 return next();
             }
 
-            // For profile routes, ensure user is accessing their own profile
-            // This is automatically handled since we use req.user._id in controllers
             next();
 
         } catch (error) {

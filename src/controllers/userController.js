@@ -311,6 +311,36 @@ async function deleteUser(req, res) {
     }
 }
 
+async function updateUserRole(req, res) {
+    try {
+        const { id } = req.params;
+        const { roleId } = req.body;
+
+        const role = await Role.findById(roleId);
+        if (!role) {
+            return res.status(404).json({ success: false, message: "Role not found" });
+        }
+
+        const user = await User.findByIdAndUpdate(id, { role: roleId }, { new: true }).populate("role");
+
+        if (!user) {
+            return res.status(404).json({ success: false, message: "User not found" });
+        }
+
+        return res.status(200).json({
+            success: true,
+            message: `User role updated to ${role.name}`,
+            user
+        });
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            message: "Internal Server Error",
+            error: error.message,
+        });
+    }
+}
+
 module.exports = {
     register,
     login,
@@ -318,5 +348,6 @@ module.exports = {
     updateProfile,
     getAllUsers,
     deleteUser,
+    updateUserRole,
     verifyEmail,
 };
