@@ -48,11 +48,6 @@ const getAdminStats = async (req, res) => {
             }
         ]);
 
-        // Map aggregation result to Mon-Sun array
-        // MongoDB $dayOfWeek: 1=Sun, 2=Mon, ..., 7=Sat
-        // We want Mon(0 index of generic array) to Sun(6 index).
-        // Let's create a map relative to names or just return ordered values if frontend handles it.
-        // Easiest is to return keyed objects or ordered array complying with ChartJS labels
         const daysMap = { 2: 'Mon', 3: 'Tue', 4: 'Wed', 5: 'Thu', 6: 'Fri', 7: 'Sat', 1: 'Sun' };
         const appointmentCounts = { 'Mon': 0, 'Tue': 0, 'Wed': 0, 'Thu': 0, 'Fri': 0, 'Sat': 0, 'Sun': 0 };
 
@@ -88,9 +83,6 @@ const getAdminStats = async (req, res) => {
             { $sort: { "_id.year": 1, "_id.month": 1 } }
         ]);
 
-        // Discharges (Admission status 'Discharged')
-        // Assuming we track dischargeDate or updatedAt for discharged status. 
-        // If dischargeDate doesn't exist, we might use updatedAt if status is 'Discharged'
         const dischargedData = await Admission.aggregate([
             {
                 $match: {

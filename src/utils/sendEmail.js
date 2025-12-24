@@ -2,7 +2,7 @@ const transporter = require("./transporter");
 
 const verificationMail = async (to, token) => {
   const frontendUrl =
-    process.env.FRONTEND_URL 
+    process.env.FRONTEND_URL
 
   const appName = "Healing Care";
 
@@ -74,7 +74,7 @@ const verificationMail = async (to, token) => {
     to,
     subject: `Verify your email – ${appName}`,
     html,
-    from: `"${appName}" <testamentdummy@gmail.com>`,
+    from: `"${appName}" <${process.env.SMTP_EMAIL}>`,
   };
 
   try {
@@ -162,7 +162,7 @@ const accountCreatedMail = async (to, { name, email, password }) => {
     to,
     subject: `Account Created – ${appName}`,
     html,
-    from: `"${appName}" <testamentdummy@gmail.com>`,
+    from: `"${appName}" <${process.env.SMTP_EMAIL}>`,
   };
 
   try {
@@ -212,7 +212,7 @@ const verifyOTPMail = async (to, otp) => {
       to,
       subject: `Your Login OTP – ${appName}`,
       html,
-      from: `"${appName}" <noreply@healingcare.com>`, 
+      from: `"${appName}" <${process.env.SMTP_EMAIL}>`,
     });
     console.log(`OTP email sent to ${to}`);
     return true;

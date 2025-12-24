@@ -14,7 +14,8 @@ const generateHash = (phone) => {
 };
 
 const otpVerify = (otp, hash, phone) => {
-    const [hashValue, expires] = hash.split('.');
+    try {
+        const [hashValue, expires] = hash.split('.');
 
     if (Date.now() > parseInt(expires)) {
         return { success: false, message: 'OTP expired' };
@@ -28,6 +29,9 @@ const otpVerify = (otp, hash, phone) => {
     }
 
     return { success: false, message: 'Invalid OTP' };
+    } catch (error) {
+        console.error(`Error sending otp`, error);
+    }
 };
 
 module.exports = { generateHash, otpVerify };
