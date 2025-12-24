@@ -25,6 +25,8 @@ const chatRoute = require("./routes/chatRoute");
 const faqRoute = require("./routes/faqRoute");
 const sessionRoute = require("./routes/sessionRoute");
 
+app.get("/", (req, res) => res.send("server is live"));
+
 
 app.use("/api/user", userRoute);
 app.use("/api/roles", roleRoute);
