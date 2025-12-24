@@ -166,12 +166,11 @@ async function login(req, res) {
                 .json({ success: false, message: "Incorrect email or password" });
 
         // Generate OTP
-        const phoneForHash = checkUser.phone || email; // Fallback to email if phone not available
+        const phoneForHash = checkUser.phone || email;
         const { otp, hash } = generateHash(phoneForHash);
 
-        console.log(`Generated OTP for ${email}: ${otp}`); // For debugging - remove in production
+        console.log(`Generated OTP for ${email}: ${otp}`); 
 
-        // Send OTP via Email
         const emailSent = await verifyOTPMail(checkUser.email, otp);
 
         if (!emailSent) {
@@ -189,7 +188,7 @@ async function login(req, res) {
             message: "OTP sent to your email",
             otpSent: true,
             email: checkUser.email,
-            phone: phoneForHash, // Send the same value used for hash
+            phone: phoneForHash, 
             hash
         });
 
