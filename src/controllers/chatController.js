@@ -6,21 +6,18 @@ const chatSession = require("../models/sessionSchema");
 async function findMatchfaq(userText) {
   const userTextLower = userText.toLowerCase();
 
-  // Find all active FAQs
   const allFaqs = await Faq.find({ isActive: true }).sort({ priority: -1 });
 
-  // Look for the best match
   let bestMatch = null;
 
   for (const faq of allFaqs) {
-    // Check if any keyword exists in the user text
     const hasMatch = faq.keywords.some(keyword =>
       userTextLower.includes(keyword.toLowerCase())
     );
 
     if (hasMatch) {
       bestMatch = faq;
-      break; // Since we sorted by priority, the first match is the highest priority
+      break; 
     }
   }
 
@@ -30,7 +27,6 @@ async function findMatchfaq(userText) {
 
 const sendMessage = async (req, res) => {
   try {
-    // Use validated data from middleware
     const { sessionId, message } = req.validatedData || req.body;
 
     if (!sessionId || !message) {
@@ -44,7 +40,6 @@ const sendMessage = async (req, res) => {
     });
     await userMessage.save();
 
-    // Update or create session
     await chatSession.findOneAndUpdate(
       { sessionId },
       { lastActivity: new Date() },
@@ -77,7 +72,6 @@ const sendMessage = async (req, res) => {
 
 const getChatHistory = async (req, res) => {
   try {
-    // Use validated data from middleware
     const { sessionId } = req.validatedData || req.query;
 
     if (!sessionId) {
@@ -97,7 +91,6 @@ const getChatHistory = async (req, res) => {
 
 const updateSessionInfo = async (req, res) => {
   try {
-    // Use validated data from middleware
     const validatedData = req.validatedData || req.body;
     const { sessionId, userInfo } = validatedData;
     const { name, email, phone } = userInfo || validatedData;

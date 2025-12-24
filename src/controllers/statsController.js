@@ -110,11 +110,9 @@ const getAdminStats = async (req, res) => {
             { $sort: { "_id.year": 1, "_id.month": 1 } }
         ]);
 
-        // Helper to formatting chart data
         const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
         const flowStats = [];
 
-        // Generate last 7 months labels and default data
         for (let i = 6; i >= 0; i--) {
             const d = new Date();
             d.setMonth(d.getMonth() - i);
@@ -141,8 +139,8 @@ const getAdminStats = async (req, res) => {
                 appointments: todayAppointments,
                 admissions: activeAdmissions,
                 charts: {
-                    appointments: appointmentCounts, // { Mon: 5, Tue: 2 ... }
-                    patientFlow: flowStats // [{ month: 'May', newPatients: 10, discharged: 5 }, ...]
+                    appointments: appointmentCounts, 
+                    patientFlow: flowStats 
                 }
             }
         });

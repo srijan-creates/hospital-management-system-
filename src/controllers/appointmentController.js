@@ -8,14 +8,11 @@ const createAppointment = async (req, res) => {
     try {
         const { doctorId, patientId, date, type, notes } = req.body;
 
-        // Validate doctor exists
         const doctor = await User.findById(doctorId);
         if (!doctor || doctor.role !== 'doctor') {
             return res.status(404).json({ message: "Doctor not found" });
         }
 
-        // If receptionist is creating, patientId is required
-        // If patient is creating, use their own ID
         const finalPatientId = req.user.role === 'patient' ? req.user.userId : patientId;
 
         if (!finalPatientId) {
@@ -87,7 +84,6 @@ const getPatientAppointments = async (req, res) => {
             .populate('doctor', 'name email')
             .sort({ date: -1 });
 
-        // Get doctor profile details for each appointment
         const appointmentsWithDetails = await Promise.all(
             appointments.map(async (apt) => {
                 const doctorProfile = await Doctor.findOne({ userId: apt.doctor._id });
@@ -152,7 +148,6 @@ const cancelAppointment = async (req, res) => {
             return res.status(404).json({ message: "Appointment not found" });
         }
 
-        // Check if user is the patient who booked it
         if (req.user.role === 'patient' && appointment.patient.toString() !== userId) {
             return res.status(403).json({ message: "Unauthorized to cancel this appointment" });
         }

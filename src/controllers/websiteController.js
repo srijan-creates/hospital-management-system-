@@ -19,7 +19,7 @@ const submitContactMessage = async (req, res) => {
         res.status(201).json({
             success: true,
             message: "Message sent successfully!",
-            data: newMessage // Optional: return data if needed
+            data: newMessage 
         });
     } catch (error) {
         console.error("Error submitting contact message:", error);
@@ -27,9 +27,6 @@ const submitContactMessage = async (req, res) => {
     }
 };
 
-// @desc    Subscribe to newsletter
-// @route   POST /api/web/subscribe
-// @access  Public
 const subscribeNewsletter = async (req, res) => {
     try {
         const { email } = req.body;

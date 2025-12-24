@@ -1,12 +1,11 @@
 const chatSession = require("../models/sessionSchema");
 const Chat = require("../models/chatSchema");
 
-// Get all chat sessions
 const getAllSessions = async (req, res) => {
     try {
         const sessions = await chatSession.find()
             .sort({ lastActivity: -1 })
-            .limit(100); // Limit to last 100 sessions
+            .limit(100); 
 
         res.json(sessions);
     } catch (error) {
@@ -24,7 +23,6 @@ const getSessionById = async (req, res) => {
             return res.status(404).json({ message: 'Session not found' });
         }
 
-        // Get messages for this session
         const messages = await Chat.find({ sessionId: session.sessionId })
             .sort({ createdAt: 1 })
             .select('role content createdAt intent');
@@ -92,10 +90,8 @@ const deleteSession = async (req, res) => {
             return res.status(404).json({ message: 'Session not found' });
         }
 
-        // Delete all messages for this session
         await Chat.deleteMany({ sessionId: session.sessionId });
 
-        // Delete the session
         await chatSession.findByIdAndDelete(req.params.id);
 
         res.json({ message: 'Session and messages deleted successfully' });
@@ -116,7 +112,6 @@ const getSessionAnalytics = async (req, res) => {
         const userMessages = await Chat.countDocuments({ role: 'user' });
         const botMessages = await Chat.countDocuments({ role: 'bot' });
 
-        // Sessions with user info
         const sessionsWithInfo = await chatSession.countDocuments({
             'userInfo.email': { $exists: true, $ne: null }
         });
