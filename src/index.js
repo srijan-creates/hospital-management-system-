@@ -8,20 +8,7 @@
 
   const cors = require("cors");
 
-  const allowedOrigins = [process.env.FRONTEND_URL];
-  const corsOptions = {
-    origin: (origin, callback) => {
-      if (allowedOrigins.indexOf(origin) !== -1 || !origin) {
-        callback(null, true);
-      } else {
-        callback(new Error('Not allowed by CORS'));
-      }
-    },
-    credentials: true,
-    optionsSuccessStatus: 200
-  };
-
-  app.use(cors(corsOptions));
+  app.use(cors());
 
   const PORT = process.env.PORT;
   const connectDb = require("./config/connectDb");
