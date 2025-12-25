@@ -167,33 +167,61 @@ async function login(req, res) {
 
         // Generate OTP
         const phoneForHash = checkUser.phone || email;
+
+        console.log("=".repeat(60));
+        console.log("🔐 LOGIN OTP GENERATION");
+        console.log("=".repeat(60));
+        console.log("User:", email);
+        console.log("Phone for hash:", phoneForHash);
+
         const { otp, hash } = generateHash(phoneForHash);
+        console.log(`Generated OTP: ${otp}`);
+        console.log("Hash created successfully");
 
-        console.log(`Generated OTP for ${email}: ${otp}`); 
+        // Check if email configuration is available
+        if (!process.env.SMTP_EMAIL || !process.env.SMTP_PASS) {
+            console.error("❌ SMTP credentials not configured!");
+            return res.status(500).json({
+                success: false,
+                message: "Email service is not configured. Please contact the administrator.",
+            });
+        }
 
+        console.log("Attempting to send OTP email to:", checkUser.email);
         const emailSent = await verifyOTPMail(checkUser.email, otp);
 
         if (!emailSent) {
-            console.error(`Failed to send OTP email to ${checkUser.email}`);
+            console.error(`❌ Failed to send OTP email to ${checkUser.email}`);
+            console.error("Possible causes:");
+            console.error("  1. Invalid SMTP credentials");
+            console.error("  2. Gmail App Password not configured correctly");
+            console.error("  3. Network/firewall issues");
+            console.error("  4. Gmail security settings blocking the app");
             return res.status(500).json({
                 success: false,
                 message: "Failed to send OTP email. Please check your email configuration or try again later.",
             });
         }
 
-        console.log(`OTP email sent successfully to ${checkUser.email}`);
+        console.log(`✅ OTP email sent successfully to ${checkUser.email}`);
+        console.log("=".repeat(60));
 
         return res.status(200).json({
             success: true,
             message: "OTP sent to your email",
             otpSent: true,
             email: checkUser.email,
-            phone: phoneForHash, 
+            phone: phoneForHash,
             hash
         });
 
     } catch (error) {
-        console.error("Login error:", error);
+        console.error("=".repeat(60));
+        console.error("❌ LOGIN ERROR");
+        console.error("=".repeat(60));
+        console.error("Error message:", error.message);
+        console.error("Error stack:", error.stack);
+        console.error("=".repeat(60));
         return res.status(500).json({
             success: false,
             message: "Internal Server Error",

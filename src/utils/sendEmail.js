@@ -208,16 +208,29 @@ const verifyOTPMail = async (to, otp) => {
     `;
 
   try {
+    console.log("📧 Sending OTP email...");
+    console.log("  To:", to);
+    console.log("  From:", process.env.SMTP_EMAIL);
+    console.log("  OTP:", otp);
+
     await transporter.sendMail({
       to,
       subject: `Your Login OTP – ${appName}`,
       html,
       from: `"${appName}" <${process.env.SMTP_EMAIL}>`,
     });
-    console.log(`OTP email sent to ${to}`);
+
+    console.log(`✅ OTP email sent successfully to ${to}`);
     return true;
   } catch (error) {
-    console.error("Error sending OTP email:", error);
+    console.error("❌ Error sending OTP email:");
+    console.error("  Error type:", error.name);
+    console.error("  Error message:", error.message);
+    console.error("  Error code:", error.code);
+    if (error.response) {
+      console.error("  SMTP Response:", error.response);
+    }
+    console.error("  Full error:", error);
     return false;
   }
 };
