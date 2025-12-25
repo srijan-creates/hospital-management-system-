@@ -11,7 +11,7 @@ const connectDb = require("./config/connectDb");
 
 connectDb();
 
-app.get("/", (req, res) => {
+app.get("/test", (req, res) => {
   res.send("server is live");
 });
 
