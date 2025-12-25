@@ -10,7 +10,7 @@ app.use(cors());
 const connectDb = require("../src/config/connectDb");
 
 connectDb();
-  
+
 app.get("/test", (req, res) => {
   res.send("server is live");
 });
